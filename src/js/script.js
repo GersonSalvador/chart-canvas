@@ -45,7 +45,7 @@ class ChartCanvas {
     this.ctx.beginPath();
     this.ctx.strokeStyle = color || this.handleColor();
     this.ctx.lineWidth = 10;
-    this.ctx.arc(200, 200, size, 1.5 * this.PI, this.calcDrgree(degree));
+    this.ctx.arc(this.x, this.y, size, 1.5 * this.PI, this.calcDrgree(degree));
     this.ctx.stroke();
 
   }
@@ -55,11 +55,12 @@ class ChartCanvas {
     const defaultSettings = {
       width: 400,
       height: 400,
+      margin: [20, 20, 20, 20],
       maxValue: 100
     }
 
     this.settings = { ...defaultSettings, ...settings }
-
+    this.handleXYAxis()
   }
 
   handleCanvasEl(elId) {
@@ -80,4 +81,16 @@ class ChartCanvas {
     this.ctx = this.canvas.getContext("2d");
 
   }
+
+  handleXYAxis() {
+
+    const { width, height, margin } = this.settings
+
+    const xArea = width - margin[1] - margin[3]
+    const yArea = height - margin[0] - margin[2]
+
+    this.x = xArea / 2
+    this.y = yArea / 2
+  }
+
 }
