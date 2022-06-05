@@ -5,8 +5,9 @@ class ChartCanvas {
     this.PI = Math.PI
     this.handleSettings(settings)
     this.handleCanvasEl(elId)
+    this.handleRaduis(values.length)
 
-    values.forEach(v => this.drawCircle(v))
+    values.forEach((v, index) => this.drawCircle(v, index))
 
   }
 
@@ -40,12 +41,12 @@ class ChartCanvas {
 
   }
 
-  drawCircle({ color, degree, size }) {
+  drawCircle({ color, degree }, index) {
 
     this.ctx.beginPath();
     this.ctx.strokeStyle = color || this.handleColor();
-    this.ctx.lineWidth = 10;
-    this.ctx.arc(this.x, this.y, size, 1.5 * this.PI, this.calcDrgree(degree));
+    this.ctx.lineWidth = this.settings.lineWidth;
+    this.ctx.arc(this.x, this.y, this.radius[index], 1.5 * this.PI, this.calcDrgree(degree));
     this.ctx.stroke();
 
   }
@@ -56,7 +57,8 @@ class ChartCanvas {
       width: 400,
       height: 400,
       margin: [20, 20, 20, 20],
-      maxValue: 100
+      maxValue: 100,
+      lineWidth: 10,
     }
 
     this.settings = { ...defaultSettings, ...settings }
@@ -88,6 +90,25 @@ class ChartCanvas {
 
     this.x = width / 2
     this.y = height / 2
+  }
+
+  handleRaduis(times) {
+
+    const { width, height, margin, lineWidth } = this.settings
+    const xArea = width - margin[1] - margin[3]
+    const yArea = height - margin[0] - margin[2]
+
+    const firstRadius = (((xArea < yArea ? xArea : yArea) / 2) - lineWidth / 2)
+
+    this.radius = [...Array(times)].map((n, index) => {
+
+      const marginBetween = 1 * index
+      const otherRadius = index * lineWidth
+
+      return firstRadius - otherRadius - marginBetween
+
+    })
+
   }
 
 }
