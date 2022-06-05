@@ -47,13 +47,21 @@ class ChartCanvas {
 
   }
 
-  drawCircle({ color, degree }, index) {
+  drawCircle({ color, value, label }, index) {
 
-    this.ctx.beginPath();
-    this.ctx.strokeStyle = color || this.handleColor();
-    this.ctx.lineWidth = this.settings.lineWidth;
-    this.ctx.arc(this.x, this.y, this.radius[index], 1.5 * this.PI, this.calcDrgree(degree));
-    this.ctx.stroke();
+    const { ctx, radius, } = this
+    const { lineWidth, margin } = this.settings
+
+    ctx.beginPath();
+    ctx.strokeStyle = color || this.handleColor();
+    ctx.lineWidth = lineWidth;
+    ctx.arc(this.x, this.y, radius[index], 1.5 * this.PI, this.calcDrgree(value));
+    ctx.font = `${(lineWidth)}px Arial`;
+    ctx.textAlign = 'end'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(label, this.y - 4, margin[0] + ((index + 1) * (lineWidth + 1)) - (lineWidth * .43));
+
+    ctx.stroke();
 
   }
 

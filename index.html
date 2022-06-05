@@ -14,11 +14,21 @@
   <script src="./src/js/script.js"></script>
   <script>
 
-    const values = [...Array(20)].map((n, index) => ({ degree: 120 - (index * 3), }))
-
+    const values = [...Array(5)].map((n, index) => ({ value: 80 - (index * 3), label: 'Exemplo' }))
+    // const values = [
+    //   { value: 886.2, label: 'Amazon', },
+    //   { value: 740.4, label: 'Apple', },
+    //   { value: 517.6, label: 'Alphabet', },
+    //   { value: 375.7, label: 'Microsoft', },
+    //   { value: 212.4, label: 'Facebook', },
+    //   { value: 142.8, label: 'Tesla', },
+    //   { value: 59.9, label: 'Netflix', },
+    // ]
+    const px = 1000
     const settings = {
-      height: 1000,
-      width: 800,
+      height: px,
+      width: px,
+      maxValue: 100
     }
 
     const chartCanvas = new ChartCanvas("#myCanvas", values, settings)
