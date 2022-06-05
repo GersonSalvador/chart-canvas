@@ -14,17 +14,11 @@
   <script src="./src/js/script.js"></script>
   <script>
 
-    const values = [
-      {
-        degree: 180,
-      }, {
-        degree: 360,
-      }
-    ]
+    const values = [...Array(20)].map((n, index) => ({ degree: 120 - (index * 3), }))
 
     const settings = {
-      height: 800,
-      width: 600,
+      height: 1000,
+      width: 800,
     }
 
     const chartCanvas = new ChartCanvas("#myCanvas", values, settings)
