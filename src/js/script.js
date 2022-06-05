@@ -38,7 +38,7 @@ class ChartCanvas {
 
   calcDrgree(num) {
 
-    const { baseValue, maxDegree, maxValue } = this.settings
+    const { baseValue, maxDegree, } = this.settings
     const value = num * baseValue
     const finalValue = value > maxDegree ? maxDegree : value
     const degree = (((finalValue / 180) + 1.5) * this.PI)
