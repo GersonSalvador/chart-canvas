@@ -3,9 +3,10 @@ class ChartCanvas {
   constructor(elId, values, settings) {
 
     this.PI = Math.PI
-    this.handleSettings(settings)
+    this.handleSettings(settings, values)
     this.handleCanvasEl(elId)
-    this.handleRaduis(values.length)
+    this.handleLineHeight()
+    this.handleRaduis()
 
     values.forEach((v, index) => this.drawCircle(v, index))
 
@@ -37,7 +38,7 @@ class ChartCanvas {
 
   calcDrgree(num) {
 
-    return ((num / 180) + 1.5) * this.PI
+    return (((num / 180) * .85) + 1.5) * this.PI
 
   }
 
@@ -51,18 +52,30 @@ class ChartCanvas {
 
   }
 
-  handleSettings(settings) {
+  handleSettings(settings, values) {
+
+    const times = values.length
 
     const defaultSettings = {
       width: 400,
       height: 400,
       margin: [20, 20, 20, 20],
       maxValue: 100,
-      lineWidth: 10,
+      maxDegree: 360 * .85,
+      times,
     }
 
     this.settings = { ...defaultSettings, ...settings }
     this.handleXYAxis()
+    this.calcBaseValue()
+  }
+
+  calcBaseValue() {
+
+    const base = this.maxDegree / this.maxValue
+
+    this.settings.baseValue = base
+
   }
 
   handleCanvasEl(elId) {
@@ -92,7 +105,7 @@ class ChartCanvas {
     this.y = height / 2
   }
 
-  handleRaduis(times) {
+  handleRaduis() {
 
     const { width, height, margin, lineWidth } = this.settings
     const xArea = width - margin[1] - margin[3]
@@ -100,7 +113,7 @@ class ChartCanvas {
 
     const firstRadius = (((xArea < yArea ? xArea : yArea) / 2) - lineWidth / 2)
 
-    this.radius = [...Array(times)].map((n, index) => {
+    this.radius = [...Array(this.settings.times)].map((n, index) => {
 
       const marginBetween = 1 * index
       const otherRadius = index * lineWidth
@@ -108,6 +121,13 @@ class ChartCanvas {
       return firstRadius - otherRadius - marginBetween
 
     })
+
+  }
+
+  handleLineHeight() {
+
+    const halfRadius = (this.x > this.y ? this.x : this.y) / 2
+    this.settings.lineWidth = halfRadius / this.settings.times
 
   }
 
