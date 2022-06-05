@@ -84,13 +84,10 @@ class ChartCanvas {
 
   handleXYAxis() {
 
-    const { width, height, margin } = this.settings
+    const { width, height } = this.settings
 
-    const xArea = width - margin[1] - margin[3]
-    const yArea = height - margin[0] - margin[2]
-
-    this.x = xArea / 2
-    this.y = yArea / 2
+    this.x = width / 2
+    this.y = height / 2
   }
 
 }
