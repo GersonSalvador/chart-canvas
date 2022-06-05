@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=800, initial-scale=1.0">
+  <link rel="stylesheet" href="./src/css/styles.css">
+  <title>Chart Canvas</title>
+</head>
+
+<body>
+  <canvas id="myCanvas"></canvas>
+  <script src="./src/js/script.js"></script>
+  <script>
+
+    const values = [
+      {
+        degree: 180,
+        size: 150
+      }, {
+        degree: 360,
+        size: 180
+      }
+    ]
+
+    const settings = {
+      height: 800,
+      width: 600,
+    }
+
+    const chartCanvas = new ChartCanvas("#myCanvas", values, settings)
+  </script>
+</body>
+
+</html>
