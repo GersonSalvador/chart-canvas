@@ -7,6 +7,11 @@
   <meta name="viewport" content="width=800, initial-scale=1.0">
   <link rel="stylesheet" href="./src/css/styles.css">
   <title>Chart Canvas</title>
+  <style>
+    body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+  </style>
 </head>
 
 <body>
@@ -32,10 +37,12 @@
       value: {
         sulfix: 'k',
         prefix: '$',
-      }
+      },
+      fontFamily: 'Verdana'
     }
 
-    const chartCanvas = new ChartCanvas("#myCanvas", values, settings)
+    const chartCanvas = new ChartCanvas("#myCanvas", settings)
+    chartCanvas.plotData(values)
   </script>
 </body>
 
