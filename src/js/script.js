@@ -22,7 +22,12 @@ class ChartCanvas {
       margin: [20, 20, 20, 20],
       maxValue: 100,
       maxDegree: 360 * .85,
-      fontFamily: 'sans-serif'
+      font: {
+        style: 'normal',
+        variant: 'normal',
+        weight: 'normal',
+        family: 'sans-serif',
+      }
     }
 
   }
@@ -31,8 +36,11 @@ class ChartCanvas {
 
     const times = values.length
     const { defaultSettings } = this
+    const { font: defaultFont } = defaultSettings
+    const { font: settingsFont } = settings
+    const font = { ...defaultFont, ...settingsFont }
 
-    this.settings = { ...defaultSettings, ...settings, times }
+    this.settings = { ...defaultSettings, ...settings, font, times }
     this.handleXYAxis()
     this.calcBaseValue()
   }
@@ -58,6 +66,14 @@ class ChartCanvas {
     }
 
     return color || `hsl(${hue}, 45%, 80%)`
+
+  }
+
+  handleFont(size, settings) {
+
+    const { style, variant, weight, family } = { ...this.settings.font, ...settings }
+    console.log({ style, variant, weight, family })
+    return `${style} ${variant} ${weight} ${size}px ${family}`
 
   }
 
@@ -166,7 +182,7 @@ class ChartCanvas {
 
     ctx.save();
     ctx.translate(centerX, centerY);
-    ctx.font = `${(lineWidth)}px monospace`;
+    ctx.font = this.handleFont(lineWidth, { family: 'monospace' })
     ctx.rotate((degree * finalValue) + rotate);
 
     for (var n = 0; n < len; n++) {
@@ -184,7 +200,7 @@ class ChartCanvas {
   drawCircle({ color, value, label }, index) {
 
     const { ctx, radius, } = this
-    const { lineWidth, margin, value: { prefix, sulfix }, fontFamily } = this.settings
+    const { lineWidth, margin, value: { prefix, sulfix }, } = this.settings
     const { degree, finalValue } = this.calcDrgree(value)
 
     ctx.beginPath();
@@ -194,13 +210,13 @@ class ChartCanvas {
     ctx.stroke();
 
     //label
-    ctx.font = `${(lineWidth)}px ${fontFamily}`;
+    ctx.font = this.handleFont(lineWidth)
     ctx.textAlign = 'end'
     ctx.textBaseline = 'middle'
     ctx.fillText(label, this.y - 4, margin[0] + ((index + 1) * (lineWidth + 1)) - (lineWidth * .43));
 
     //value
-    ctx.font = `${(lineWidth * .75)}px ${fontFamily}`;
+    ctx.font = this.handleFont(lineWidth * .75)
     this.drawTextAlongArc(
       ctx,
       `${prefix}${value}${sulfix}`,
