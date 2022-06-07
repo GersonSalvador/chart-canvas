@@ -47,18 +47,27 @@ class ChartCanvas {
 
   }
 
-  drawTextAlongArc(ctx, str, centerX, centerY, radius, finalValue, lineWidth) {
-    const degree = 2 * Math.PI / 360
-    const degreePx = (Math.PI / 180) * radius
+  calcRotateStep(radius, lineWidth) {
+
+    const { PI, degree } = this
+    const degreePx = (PI / 180) * radius
     const ratio = lineWidth / degreePx
-    const rotate = ratio / degree / 6500
+
+    return ratio / degree / 6500
+
+  }
+
+  drawTextAlongArc(ctx, str, centerX, centerY, radius, finalValue, lineWidth) {
+
+    const { degree } = this
+    const rotate = this.calcRotateStep(radius, lineWidth)
     const len = str.length
     let s
 
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.font = `${(lineWidth)}px monospace`;
-    ctx.rotate((degree * finalValue) + (degree * 2));
+    ctx.rotate((degree * finalValue) + rotate * 1);
 
     for (var n = 0; n < len; n++) {
       s = str[n];
@@ -126,6 +135,7 @@ class ChartCanvas {
     }
 
     this.settings = { ...defaultSettings, ...settings }
+    this.degree = 2 * Math.PI / 360
     this.handleXYAxis()
     this.calcBaseValue()
   }
@@ -187,8 +197,10 @@ class ChartCanvas {
 
   handleLineHeight() {
 
-    const halfRadius = (this.x > this.y ? this.x : this.y) * .5
-    const lineWidth = halfRadius / this.settings.times
+    const { times } = this.settings
+    const radiusPerc = times < 5 ? .25 : times > 15 ? .75 : .5
+    const halfRadius = (this.x > this.y ? this.x : this.y) * radiusPerc
+    const lineWidth = halfRadius / times
     const limit = halfRadius * .2
     this.settings.lineWidth = lineWidth > limit ? limit : lineWidth
 
