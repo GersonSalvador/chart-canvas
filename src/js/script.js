@@ -47,20 +47,22 @@ class ChartCanvas {
 
   }
 
-  drawTextAlongArc(ctx, str, centerX, centerY, radius, angle, finalValue) {
-
+  drawTextAlongArc(ctx, str, centerX, centerY, radius, finalValue, lineWidth) {
+    const degree = 2 * Math.PI / 360
+    const degreePx = (Math.PI / 180) * radius
+    const ratio = lineWidth / degreePx
+    const rotate = ratio / degree / 6500
     const len = str.length
     let s
-    const degree = 2 * Math.PI / 360
 
     ctx.save();
     ctx.translate(centerX, centerY);
-    ctx.font = `${(this.settings.lineWidth * .5)}px monospace`;
-    ctx.rotate((degree * finalValue) + degree);
+    ctx.font = `${(lineWidth)}px monospace`;
+    ctx.rotate((degree * finalValue) + (degree * 2));
 
     for (var n = 0; n < len; n++) {
       s = str[n];
-      ctx.rotate(.25 / angle);
+      ctx.rotate(rotate);
       ctx.save();
       ctx.translate(0, -1 * radius);
       ctx.fillText(s, 0, 0);
@@ -96,8 +98,8 @@ class ChartCanvas {
       this.x,
       this.y,
       radius[index],
-      degree,
-      finalValue
+      finalValue,
+      lineWidth * .5
     )
 
   }
@@ -185,7 +187,7 @@ class ChartCanvas {
 
   handleLineHeight() {
 
-    const halfRadius = (this.x > this.y ? this.x : this.y) / 2
+    const halfRadius = (this.x > this.y ? this.x : this.y) * .5
     const lineWidth = halfRadius / this.settings.times
     const limit = halfRadius * .2
     this.settings.lineWidth = lineWidth > limit ? limit : lineWidth
