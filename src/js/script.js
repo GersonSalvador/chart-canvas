@@ -5,17 +5,19 @@ class ChartCanvas {
     this.setConstants()
     this.handleSettings(settings,)
     this.handleCanvasEl()
-
+    this.handleTitle()
   }
 
   setConstants() {
+
+    const margin = [80, 20, 20, 20]
 
     this.PI = Math.PI
     this.degree = 2 * this.PI / 360
     this.defaultSettings = {
       width: 400,
       height: 400,
-      margin: [20, 20, 20, 20],
+      margin,
       maxValue: 100,
       maxDegree: 360 * .85,
       font: {
@@ -23,20 +25,19 @@ class ChartCanvas {
         variant: 'normal',
         weight: 'normal',
         family: 'sans-serif',
-      }
+      },
     }
 
   }
 
   handleSettings(settings,) {
 
-    const times = values.length
     const { defaultSettings } = this
     const { font: defaultFont } = defaultSettings
     const { font: settingsFont } = settings
     const font = { ...defaultFont, ...settingsFont }
 
-    this.settings = { ...defaultSettings, ...settings, font, times, }
+    this.settings = { ...defaultSettings, ...settings, font, }
     this.handleXYAxis()
     this.calcBaseValue()
   }
@@ -65,12 +66,22 @@ class ChartCanvas {
 
   }
 
-  handleFont(size, settings) {
+  handleFont(ctx, size, settings) {
 
-    const { style, variant, weight, family } = { ...this.settings.font, ...settings }
+    const {
+      style,
+      variant,
+      weight,
+      family,
+      textAlign,
+      textBaseline,
+      fillStyle,
+    } = { ...this.settings.font, ...settings }
 
-    return `${style} ${variant} ${weight} ${size}px ${family}`
-
+    ctx.font = `${style} ${variant} ${weight} ${size}px ${family}`
+    ctx.textAlign = textAlign || 'center'
+    ctx.textBaseline = textBaseline || 'middle'
+    ctx.fillStyle = fillStyle || '#333'
   }
 
   handleCanvasEl() {
@@ -96,10 +107,10 @@ class ChartCanvas {
 
   handleXYAxis() {
 
-    const { width, height } = this.settings
+    const { width, height, margin } = this.settings
 
-    this.x = width / 2
-    this.y = height / 2
+    this.x = (width + margin[1] - margin[3]) / 2
+    this.y = (height + margin[0] - margin[2]) / 2
   }
 
   handleRaduis() {
@@ -111,7 +122,7 @@ class ChartCanvas {
 
     const firstRadius = (((xArea < yArea ? xArea : yArea) / 2) - lineWidth / 2)
 
-    this.radius = [...Array(this.settings.times)].map((n, index) => {
+    this.radius = [...Array(this.times)].map((n, index) => {
 
       const marginBetween = 1 * index
       const otherRadius = index * lineWidth
@@ -124,12 +135,37 @@ class ChartCanvas {
 
   handleLineHeight() {
 
-    const { times } = this.settings
+    const { times } = this
     const radiusPerc = times < 5 ? .25 : times > 15 ? .75 : .5
     const halfRadius = (this.x > this.y ? this.x : this.y) * radiusPerc
     const lineWidth = halfRadius / times
     const limit = halfRadius * .2
+
     this.lineWidth = lineWidth > limit ? limit : lineWidth
+
+  }
+
+  handleTitle() {
+
+    const { ctx } = this
+    const { title, subTitle, } = this.settings
+
+    //title
+    this.handleFont(ctx, 20, { textAlign: 'center', textBaseline: 'top' })
+    ctx.fillText(title, this.y, 20);
+
+    //subTitle
+    this.handleFont(ctx, 12, { fillStyle: '#999', textAlign: 'center', textBaseline: 'top' })
+    ctx.fillText(subTitle, this.y, 48);
+
+  }
+
+  calcPlotArea() {
+
+    const { margin, width, height } = this.settings
+
+    this.plotWidth = width - margin[1] - margin[3]
+    this.plotHeight = height - margin[0] - margin[2]
 
   }
 
@@ -179,7 +215,7 @@ class ChartCanvas {
 
     ctx.save();
     ctx.translate(centerX, centerY);
-    ctx.font = this.handleFont(lineWidth, { family: 'monospace' })
+    this.handleFont(ctx, lineWidth, { family: 'monospace' })
     ctx.rotate((degree * finalValue) + rotate);
 
     for (var n = 0; n < len; n++) {
@@ -196,7 +232,7 @@ class ChartCanvas {
 
   drawCircle({ color, value, label }, index) {
 
-    const { ctx, radius, lineWidth, } = this
+    const { ctx, radius, lineWidth, plotWidth } = this
     const { margin, value: { prefix, sulfix }, } = this.settings
     const { degree, finalValue } = this.calcDrgree(value)
 
@@ -207,13 +243,11 @@ class ChartCanvas {
     ctx.stroke();
 
     //label
-    ctx.font = this.handleFont(lineWidth)
-    ctx.textAlign = 'end'
-    ctx.textBaseline = 'middle'
-    ctx.fillText(label, this.y - 4, margin[0] + ((index + 1) * (lineWidth + 1)) - (lineWidth * .43));
+    this.handleFont(ctx, lineWidth * .75, { textAlign: 'end', textBaseline: 'middle' })
+    ctx.fillText(label, this.y - margin[3] - margin[1], margin[0] + ((index + 1) * (lineWidth + 1)) - (lineWidth * .5));
 
     //value
-    ctx.font = this.handleFont(lineWidth * .75)
+    this.handleFont(ctx, lineWidth * .75)
     this.drawTextAlongArc(
       ctx,
       `${prefix}${value}${sulfix}`,
@@ -228,8 +262,10 @@ class ChartCanvas {
 
   makeIt(values) {
 
+    this.times = values.length
     this.handleLineHeight(values)
     this.handleRaduis(values)
+    this.calcPlotArea()
 
     values.forEach((v, index) => this.drawCircle(v, index))
   }
