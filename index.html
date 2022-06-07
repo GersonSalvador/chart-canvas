@@ -14,21 +14,25 @@
   <script src="./src/js/script.js"></script>
   <script>
 
-    const values = [...Array(5)].map((n, index) => ({ value: 80 - (index * 3), label: 'Exemplo' }))
-    // const values = [
-    //   { value: 886.2, label: 'Amazon', },
-    //   { value: 740.4, label: 'Apple', },
-    //   { value: 517.6, label: 'Alphabet', },
-    //   { value: 375.7, label: 'Microsoft', },
-    //   { value: 212.4, label: 'Facebook', },
-    //   { value: 142.8, label: 'Tesla', },
-    //   { value: 59.9, label: 'Netflix', },
-    // ]
-    const px = 1000
+    // const values = [...Array(10)].map((n, index) => ({ value: 80 - (index * 3), label: 'Exemplo' }))
+    const values = [
+      { value: 886.2, label: 'Amazon', },
+      { value: 740.4, label: 'Apple', },
+      { value: 517.6, label: 'Alphabet', },
+      { value: 375.7, label: 'Microsoft', },
+      { value: 212.4, label: 'Facebook', },
+      { value: 142.8, label: 'Tesla', },
+      { value: 59.9, label: 'Netflix', },
+    ]
+    const px = 800
     const settings = {
       height: px,
       width: px,
-      maxValue: 100
+      maxValue: 1000,
+      value: {
+        sulfix: 'k',
+        prefix: '$',
+      }
     }
 
     const chartCanvas = new ChartCanvas("#myCanvas", values, settings)

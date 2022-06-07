@@ -43,26 +43,71 @@ class ChartCanvas {
     const finalValue = value > maxDegree ? maxDegree : value
     const degree = (((finalValue / 180) + 1.5) * this.PI)
 
-    return degree
+    return { degree, finalValue }
 
+  }
+
+  drawTextAlongArc(ctx, str, centerX, centerY, radius, angle, finalValue) {
+
+    const len = str.length
+    let s
+    const degree = 2 * Math.PI / 360
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.font = `${(this.settings.lineWidth * .5)}px monospace`;
+    ctx.rotate((degree * finalValue) + degree);
+
+    for (var n = 0; n < len; n++) {
+      s = str[n];
+      ctx.rotate(.25 / angle);
+      ctx.save();
+      ctx.translate(0, -1 * radius);
+      ctx.fillText(s, 0, 0);
+      ctx.restore();
+    }
+
+    ctx.restore();
   }
 
   drawCircle({ color, value, label }, index) {
 
     const { ctx, radius, } = this
-    const { lineWidth, margin } = this.settings
+    const { lineWidth, margin, value: { prefix, sulfix } } = this.settings
+    const { degree, finalValue } = this.calcDrgree(value)
 
     ctx.beginPath();
     ctx.strokeStyle = color || this.handleColor();
     ctx.lineWidth = lineWidth;
-    ctx.arc(this.x, this.y, radius[index], 1.5 * this.PI, this.calcDrgree(value));
+    ctx.arc(this.x, this.y, radius[index], 1.5 * this.PI, degree);
+    ctx.stroke();
+
+    //label
     ctx.font = `${(lineWidth)}px Arial`;
     ctx.textAlign = 'end'
     ctx.textBaseline = 'middle'
     ctx.fillText(label, this.y - 4, margin[0] + ((index + 1) * (lineWidth + 1)) - (lineWidth * .43));
 
-    ctx.stroke();
+    //value
+    ctx.font = `${(lineWidth * .75)}px Arial`;
+    this.drawTextAlongArc(
+      ctx,
+      `${prefix}${value}${sulfix}`,
+      this.x,
+      this.y,
+      radius[index],
+      degree,
+      finalValue
+    )
 
+  }
+
+  calcEndOfArc(degree, radius) {
+
+    const x = this.x + Math.cos(degree) * radius;
+    const y = this.y + Math.sin(degree) * radius;
+
+    return [x, y]
   }
 
   handleSettings(settings, values) {
@@ -125,6 +170,7 @@ class ChartCanvas {
     const yArea = height - margin[0] - margin[2]
 
     const firstRadius = (((xArea < yArea ? xArea : yArea) / 2) - lineWidth / 2)
+    console.log({ firstRadius })
 
     this.radius = [...Array(this.settings.times)].map((n, index) => {
 
@@ -140,7 +186,9 @@ class ChartCanvas {
   handleLineHeight() {
 
     const halfRadius = (this.x > this.y ? this.x : this.y) / 2
-    this.settings.lineWidth = halfRadius / this.settings.times
+    const lineWidth = halfRadius / this.settings.times
+    const limit = halfRadius * .2
+    this.settings.lineWidth = lineWidth > limit ? limit : lineWidth
 
   }
 
