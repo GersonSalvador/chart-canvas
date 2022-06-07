@@ -1,14 +1,10 @@
 class ChartCanvas {
 
-  constructor(values, settings) {
+  constructor(settings) {
 
     this.setConstants()
-    this.handleSettings(settings, values)
+    this.handleSettings(settings,)
     this.handleCanvasEl()
-    this.handleLineHeight()
-    this.handleRaduis()
-
-    values.forEach((v, index) => this.drawCircle(v, index))
 
   }
 
@@ -32,7 +28,7 @@ class ChartCanvas {
 
   }
 
-  handleSettings(settings, values) {
+  handleSettings(settings,) {
 
     const times = values.length
     const { defaultSettings } = this
@@ -40,7 +36,7 @@ class ChartCanvas {
     const { font: settingsFont } = settings
     const font = { ...defaultFont, ...settingsFont }
 
-    this.settings = { ...defaultSettings, ...settings, font, times }
+    this.settings = { ...defaultSettings, ...settings, font, times, }
     this.handleXYAxis()
     this.calcBaseValue()
   }
@@ -108,7 +104,8 @@ class ChartCanvas {
 
   handleRaduis() {
 
-    const { width, height, margin, lineWidth } = this.settings
+    const { lineWidth } = this
+    const { width, height, margin } = this.settings
     const xArea = width - margin[1] - margin[3]
     const yArea = height - margin[0] - margin[2]
 
@@ -132,7 +129,7 @@ class ChartCanvas {
     const halfRadius = (this.x > this.y ? this.x : this.y) * radiusPerc
     const lineWidth = halfRadius / times
     const limit = halfRadius * .2
-    this.settings.lineWidth = lineWidth > limit ? limit : lineWidth
+    this.lineWidth = lineWidth > limit ? limit : lineWidth
 
   }
 
@@ -199,8 +196,8 @@ class ChartCanvas {
 
   drawCircle({ color, value, label }, index) {
 
-    const { ctx, radius, } = this
-    const { lineWidth, margin, value: { prefix, sulfix }, } = this.settings
+    const { ctx, radius, lineWidth, } = this
+    const { margin, value: { prefix, sulfix }, } = this.settings
     const { degree, finalValue } = this.calcDrgree(value)
 
     ctx.beginPath();
@@ -227,6 +224,14 @@ class ChartCanvas {
       lineWidth * .5
     )
 
+  }
+
+  makeIt(values) {
+
+    this.handleLineHeight(values)
+    this.handleRaduis(values)
+
+    values.forEach((v, index) => this.drawCircle(v, index))
   }
 
 }
