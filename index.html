@@ -31,6 +31,7 @@
     // ]
     const px = 800
     const settings = {
+      canvas: '#myCanvas',
       height: px,
       width: px,
       maxValue: 1000,
@@ -41,8 +42,7 @@
       fontFamily: 'Verdana'
     }
 
-    const chartCanvas = new ChartCanvas("#myCanvas", settings)
-    chartCanvas.plotData(values)
+    const chartCanvas = new ChartCanvas(values, settings)
   </script>
 </body>
 

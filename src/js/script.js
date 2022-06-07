@@ -1,12 +1,14 @@
 class ChartCanvas {
 
-  constructor(elId, settings) {
+  constructor(values, settings) {
 
     this.setConstants()
     this.handleSettings(settings, values)
-    this.handleCanvasEl(elId)
+    this.handleCanvasEl()
     this.handleLineHeight()
     this.handleRaduis()
+
+    values.forEach((v, index) => this.drawCircle(v, index))
 
   }
 
@@ -59,14 +61,16 @@ class ChartCanvas {
 
   }
 
-  handleCanvasEl(elId) {
+  handleCanvasEl() {
 
-    const canvas = document.querySelector(elId)
+    const { canvas, width, height } = this.settings
 
-    canvas.width = this.settings.width;
-    canvas.height = this.settings.height;
+    const canvasElement = document.querySelector(canvas)
 
-    this.canvas = canvas
+    canvasElement.width = width;
+    canvasElement.height = height;
+
+    this.canvas = canvasElement
 
     this.handleContext()
 
@@ -93,7 +97,6 @@ class ChartCanvas {
     const yArea = height - margin[0] - margin[2]
 
     const firstRadius = (((xArea < yArea ? xArea : yArea) / 2) - lineWidth / 2)
-    console.log({ firstRadius })
 
     this.radius = [...Array(this.settings.times)].map((n, index) => {
 
@@ -207,12 +210,6 @@ class ChartCanvas {
       finalValue,
       lineWidth * .5
     )
-
-  }
-
-  plotData(values) {
-
-    values.forEach((v, index) => this.drawCircle(v, index))
 
   }
 
