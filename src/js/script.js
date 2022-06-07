@@ -72,7 +72,7 @@ class ChartCanvas {
   handleFont(size, settings) {
 
     const { style, variant, weight, family } = { ...this.settings.font, ...settings }
-    console.log({ style, variant, weight, family })
+
     return `${style} ${variant} ${weight} ${size}px ${family}`
 
   }
