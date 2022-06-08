@@ -7,15 +7,12 @@
   <meta name="viewport" content="width=800, initial-scale=1.0">
   <link rel="stylesheet" href="./src/css/styles.css">
   <title>Chart Canvas</title>
-  <style>
-    body {
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-    }
-  </style>
 </head>
 
 <body>
-  <canvas id="myCanvas"></canvas>
+  <div>
+    <canvas id="myCanvas"></canvas>
+  </div>
   <script src="./src/js/script.js"></script>
   <script>
 
@@ -29,12 +26,12 @@
       { value: 142.8, label: 'Tesla', color: '#7940CD' },
       { value: 59.9, label: 'Netflix', color: '#F93450' },
     ]
-    const px = 1200
+    const px = 400
     const settings = {
       canvas: '#myCanvas',
-      title: 'Quanto US$ as bigtechs ganham por minuto?',
-      subTitle: 'Valores estimados para o 1º trimestre de 2022',
-      height: px,
+      // title: 'Quanto US$ as bigtechs ganham por minuto?',
+      // subTitle: 'Valores estimados para o 1º trimestre de 2022',
+      height: 300,
       width: px,
       maxValue: 800,
       value: {
